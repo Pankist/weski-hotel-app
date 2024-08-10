@@ -6,8 +6,14 @@ import HotelCard from './components/HotelCard';
 const App = () => {
     const [hotels, setHotels] = useState([]);
     const [searchSummary, setSearchSummary] = useState(''); // For displaying search summary
+    const [loading, setLoading] = useState(false); // State to handle loading indication
 
     const handleSearch = async (searchParams) => {
+        // Clear current hotels and show loading state
+        setHotels([]);
+        setSearchSummary('');
+        setLoading(true);
+
         const skiSite = skiResorts.find(resort => resort.name === searchParams.location).id;
         const requestBody = {
             query: {
@@ -37,7 +43,6 @@ const App = () => {
                 result += chunk;
                 try {
                     let json = JSON.parse(result);
-                    // Assuming json.body.accommodations holds the array of hotels
                     setHotels(prevHotels => [...prevHotels, ...json.body.accommodations]);
                     result = ''; // Clear the buffer if JSON was parsed successfully
                 } catch (err) {
@@ -54,6 +59,8 @@ const App = () => {
             }
         } catch (err) {
             console.error('Failed to read or parse stream:', err);
+        } finally {
+            setLoading(false); // Reset loading state when done
         }
 
         if (hotels.length > 0) {
@@ -66,11 +73,11 @@ const App = () => {
     return (
         <div className="max-w-[1366px] mx-auto">
             <Header onSearch={handleSearch} />
-            <p className="p-4 text-xl">{searchSummary}</p>
+            <p className="p-4 text-xl">{loading ? "Loading..." : searchSummary}</p>
             <div className="p-4 flex flex-col gap-4">
                 {hotels.length > 0 ? hotels.map((hotel, index) => (
                     <HotelCard key={index} hotel={hotel} />
-                )) : (
+                )) : loading ? null : (
                     <p className="text-center text-gray-500">No results found</p>
                 )}
             </div>
