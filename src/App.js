@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import skiResorts from './skiResorts.json'; // Ensure the path is correct
+import skiResorts from './skiResorts.json';
 import Header from './components/Header';
 import HotelCard from './components/HotelCard';
 
 const App = () => {
     const [hotels, setHotels] = useState([]);
-    const [searchSummary, setSearchSummary] = useState(''); // For displaying search summary
-    const [loading, setLoading] = useState(false); // State to handle loading indication
+    const [searchSummary, setSearchSummary] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    // Helper function to sort hotels by price in ascending order
+    const sortByPriceAscending = (hotels) => {
+        return hotels.sort((a, b) => parseFloat(a.PricesInfo.AmountAfterTax) - parseFloat(b.PricesInfo.AmountAfterTax));
+    };
 
     const handleSearch = async (searchParams) => {
-        // Clear current hotels and show loading state
         setHotels([]);
         setSearchSummary('');
         setLoading(true);
@@ -43,7 +47,8 @@ const App = () => {
                 result += chunk;
                 try {
                     let json = JSON.parse(result);
-                    setHotels(prevHotels => [...prevHotels, ...json.body.accommodations]);
+                    const newHotels = json.body.accommodations;
+                    setHotels(prevHotels => sortByPriceAscending([...prevHotels, ...newHotels]));
                     result = ''; // Clear the buffer if JSON was parsed successfully
                 } catch (err) {
                     // JSON.parse failed, waiting for more chunks
@@ -52,10 +57,11 @@ const App = () => {
                 ({ value, done } = await reader.read());
                 chunk = decoder.decode(value, {stream: true});
             }
-            // Parse any remaining JSON data
+            // Parse any remaining JSON data and apply sorting
             if (result) {
                 let json = JSON.parse(result);
-                setHotels(prevHotels => [...prevHotels, ...json.body.accommodations]);
+                const newHotels = json.body.accommodations;
+                setHotels(prevHotels => sortByPriceAscending([...prevHotels, ...newHotels]));
             }
         } catch (err) {
             console.error('Failed to read or parse stream:', err);
