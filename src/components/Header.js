@@ -1,16 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import skiResorts from '../skiResorts.json'; // Adjust the path if needed
+import skiResorts from '../skiResorts.json'; // Ensure the path is correct for your project structure
+import logo from '../logo.png'; // Ensure this path is correct
+import searchIcon from '../search.png'; // Ensure this path is correct
 import { DateRangePicker } from 'react-date-range';
-import 'react-date-range/dist/styles.css'; // main css file
-import 'react-date-range/dist/theme/default.css'; // theme css file
+import 'react-date-range/dist/styles.css'; // Default styles for DateRangePicker
+import 'react-date-range/dist/theme/default.css'; // Default theme for DateRangePicker
 
 const Header = ({ onSearch }) => {
-    const [location, setLocation] = useState(skiResorts[3].name);
-    const [people, setPeople] = useState(4);
+    const [location, setLocation] = useState(skiResorts[3].name); // Default location set to the 4th item in skiResorts
+    const [people, setPeople] = useState(4); // Default number of people set to 4
     const [dates, setDateRange] = useState([
         {
-          startDate: new Date(),
-          endDate: new Date(),
+          startDate: new Date(), // Starting today
+          endDate: new Date(), // Ending today, adjustable via DateRangePicker
           key: 'selection',
         }
     ]);
@@ -19,19 +21,19 @@ const Header = ({ onSearch }) => {
 
     const handleSearch = () => {
         onSearch({ location, people, dates: dates[0] });
-        setShowCalendar(false);
+        setShowCalendar(false); // Close calendar popup after search
     };
 
     const handleDateSelection = (ranges) => {
-        setDateRange([ranges.selection]);
+        setDateRange([ranges.selection]); // Update date range based on user selection
     };
 
     const toggleCalendar = () => {
-        setShowCalendar(!showCalendar);
+        setShowCalendar(!showCalendar); // Toggle visibility of calendar popup
     };
 
-    // Adjust calendar position dynamically
     useEffect(() => {
+        // Adjust position of calendar popup based on its location in the viewport
         if (showCalendar && calendarRef.current) {
             const { top, right } = calendarRef.current.getBoundingClientRect();
             const shiftRight = right > window.innerWidth ? window.innerWidth - right : 0;
@@ -43,8 +45,7 @@ const Header = ({ onSearch }) => {
     return (
         <header className="bg-white p-6 shadow flex justify-between items-center">
             <div className="flex items-center space-x-4">
-                <img src="/logo.png" alt="Logo" style={{ width: '126px', height: '20px' }} />
-                <div className="text-2xl font-bold">WE-SKI</div>
+                <img src={logo} alt="Logo" style={{ width: '126px', height: '20px' }} />
             </div>
             <div ref={calendarRef} className="flex space-x-4 items-center relative">
                 <select value={location} onChange={(e) => setLocation(e.target.value)}
@@ -67,7 +68,15 @@ const Header = ({ onSearch }) => {
                         </button>
                     </div>
                 )}
-                <button onClick={handleSearch} className="bg-blue-600 text-white p-2 rounded-lg">Search</button>
+                <button onClick={handleSearch} style={{
+                        width: '112px',
+                        height: '44px',
+                        borderRadius: '8px', // All corners rounded
+                        opacity: '1' // Ensuring visibility
+                    }} className="border border-blue-600 text-blue-600 bg-white p-2 rounded-lg flex items-center space-x-2">
+                    <img src={searchIcon} alt="Search" className="w-4 h-4" />
+                    <span>Search</span>
+                </button>
             </div>
         </header>
     );
