@@ -1,5 +1,5 @@
 import React from 'react';
-import placeholder from '../placeholder.png'; // Ensure this path is correct for your project structure
+import placeholder from '../placeholder.png'; //stub image for cases the media is broken
 
 const HotelCard = ({ hotel }) => {
     // Find the main image using the provided structure

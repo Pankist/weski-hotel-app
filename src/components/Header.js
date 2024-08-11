@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import skiResorts from '../skiResorts.json'; // Ensure the path is correct for your project structure
-import logo from '../logo.png'; // Ensure this path is correct
-import searchIcon from '../search.png'; // Ensure this path is correct
+import skiResorts from '../skiResorts.json'; // main ski resorts configuration file
+import logo from '../logo.png';
+import searchIcon from '../search.png';
 import { DateRangePicker } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // Default styles for DateRangePicker
 import 'react-date-range/dist/theme/default.css'; // Default theme for DateRangePicker
